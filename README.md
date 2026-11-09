@@ -1,217 +1,288 @@
-# Pratibha
+# Pratibha · ప్రతిభ
 
-A small offline desktop notebook for the moments away from your paper journal.
-Python, PySide6 Widgets, and Python's built-in `sqlite3`. The interface uses flat
-charcoal and muted purple tones, following the supplied notebook sketch's cover,
-quick-capture dialog, and spacious writing page. The larger Home wordmark alternates between ప్రతిభ and Pratibha every five
-seconds, retyping each version with a blinking cursor. Telugu syllables stay intact.
-Buttons have rounded corners and subtle shadows; capture buttons are circular.
-Varela Round is bundled locally for the interface, with Noto Sans Telugu for
-the Telugu wordmark and Telugu text. Font files and their SIL Open Font Licenses
-are in `pratibha/assets/fonts/`; no font downloads occur at runtime.
+**A small, offline desktop journal for the moments away from your paper notebook.**
 
-## Fedora setup and launch
+Pratibha is a companion to a paper journal: capture a quick thought, write down
+something you want to work on, or remember a task. Open it, write, and get back
+to your day. Your notes stay on your computer, with no account, cloud sync,
+analytics, or AI services.
 
-From a terminal, install Python if needed:
+- **Journal:** a quiet plain-text notebook page with Date, Context, Location,
+  and Time. Meaningful drafts autosave; **Finish entry** makes an entry read-only.
+- **Insights:** your own observations and things to work on, with a **Worked on**
+  checkbox you can undo.
+- **Reminders:** one-time tasks shown as square cards. Complete one to fade it
+  out and close the gap. View completed cards to reopen or clear them.
+- **Calendar:** finished entries and reminders on their recorded or due dates,
+  including completed reminders.
+- **Appearance:** a dark, flat theme with a customizable accent color and locally
+  bundled fonts. The Home title alternates between English and Telugu.
+- **Optional entry passwords:** off by default; enable the toggle when creating
+  an entry to encrypt its text, context, and location.
+
+Built with Python, PySide6 Widgets, Python's `sqlite3`, and `cryptography`.
+
+## Platforms and requirements
+
+Pratibha runs from source; there is currently no packaged `.exe`, `.dmg`, or Linux
+installer. Instructions below cover Windows, macOS, and Linux desktops. It is
+not a mobile or browser app.
+
+| Platform | Verification |
+| --- | --- |
+| Fedora Linux 42, Python 3.13, native Wayland | Tested, including GUI and offline checks |
+| Other Linux desktop distributions | Installation guidance; not tested |
+| Windows | Designed to be portable; not tested |
+| macOS, Intel or Apple Silicon | Designed to be portable; not tested |
+
+You need Python and a desktop environment supported by the installed PySide6
+release. **Python 3.13** matches the version used for development. The code uses
+Python 3.10+ features, but dependency support also depends on your Python version,
+OS version, and processor architecture. Use a standard 64-bit Python build on
+Windows. Do not copy a Linux `.venv` to another OS; create a new one there.
+
+**Downloading the project and installing dependencies may need internet access.
+Once installed, normal app use works offline.** SQLite and the fonts do not need
+separate installation.
+
+## Get the project
+
+Choose either method:
+
+- **Without Git:** open [the repository](https://github.com/Adi-Turaga/pratibha),
+  select **Code → Download ZIP**, and extract it into a permanent folder.
+  If the repository is private, sign in with a GitHub account that has access.
+- **With Git:** authenticate to GitHub if needed, then run:
+
+  ```bash
+  git clone https://github.com/Adi-Turaga/pratibha.git
+  cd pratibha
+  ```
+
+For every setup command below, first open a terminal **in the folder containing
+`requirements.txt`**. The ZIP's extracted folder may be named `pratibha-main`.
+Keep this folder after installation; it contains the app and its virtual environment.
+
+## Install on Windows
+
+1. Install **Python 3.13** from [python.org](https://www.python.org/downloads/windows/).
+   Follow the [official Windows setup instructions](https://docs.python.org/3.13/using/windows.html)
+   and include pip and the Python launcher. Open a new PowerShell window afterward.
+2. Open the project folder in File Explorer, right-click an empty area, and choose
+   **Open in Terminal**. Use a PowerShell tab.
+3. Create the environment, install dependencies, and launch:
+
+   ```powershell
+   py -3.13 -m venv .venv
+   .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+   .\.venv\Scripts\python.exe -m pratibha
+   ```
+
+For later launches, run this from the project folder:
+
+```powershell
+.\.venv\Scripts\python.exe -m pratibha
+```
+
+No PowerShell activation script or execution-policy change is required. If `py`
+is not recognized, check the Python installation and reopen your terminal.
+
+For a double-click launcher, save the following as **`Launch Pratibha.bat`** beside
+`requirements.txt` (ensure the filename does not end in `.txt`):
+
+```bat
+@echo off
+cd /d "%~dp0"
+start "" ".venv\Scripts\pythonw.exe" -m pratibha
+```
+
+If that launcher fails silently, use the PowerShell command above to see errors.
+
+## Install on macOS
+
+1. Install **Python 3.13** using the macOS installer from
+   [python.org](https://www.python.org/downloads/macos/). Follow the
+   [official macOS setup instructions](https://docs.python.org/3.13/using/mac.html),
+   including the installer's certificate setup instructions.
+2. Open Terminal and change into your downloaded or cloned project folder.
+3. Create the environment, install dependencies, and launch:
+
+   ```bash
+   python3.13 -m venv .venv
+   .venv/bin/python -m pip install -r requirements.txt
+   .venv/bin/python -m pratibha
+   ```
+
+For later launches, run this from the project folder:
+
+```bash
+.venv/bin/python -m pratibha
+```
+
+Use a Python installer matching your Mac; the official universal2 installer
+supports both Intel and Apple Silicon. The selected dependency versions must
+also support your macOS release.
+
+## Install on Linux
+
+Install Python, pip, and virtual-environment support using your distribution's
+package manager. Choose the appropriate command:
+
+**Fedora:**
 
 ```bash
 sudo dnf install python3 python3-pip
 ```
 
-Set up the project (these installation steps may require internet access):
+**Ubuntu / Debian:**
 
 ```bash
-cd /home/adi/pratibha
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
+sudo apt update
+sudo apt install python3 python3-pip python3-venv
 ```
 
-Then launch:
+**Arch Linux:**
 
 ```bash
-cd /home/adi/pratibha
+sudo pacman -Syu python python-pip
+```
+
+On other distributions, install the equivalent packages. Then, from the project
+folder, create the environment, install dependencies, and launch:
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python -m pratibha
 ```
 
-After dependencies are installed, normal app use requires no internet access.
-There are no accounts, remote fonts, cloud services, analytics, or AI features.
-The reference photograph is not required at runtime.
-
-If Qt reports a missing Linux platform library, install the matching Fedora Qt
-runtime dependencies. For an X11/xcb error, the commonly needed packages are:
+For later launches, run this from the project folder:
 
 ```bash
+.venv/bin/python -m pratibha
+```
+
+Run the app as your normal user, not with `sudo`. A desktop session is required
+for normal use; the headless test mode below is for verification only.
+
+If Qt reports missing X11/xcb libraries, these packages may be needed:
+
+```bash
+# Fedora
 sudo dnf install libxcb xcb-util-cursor libxkbcommon-x11
 ```
 
-## Using the notebook
+```bash
+# Ubuntu / Debian
+sudo apt install libxcb-cursor0 libxkbcommon-x11-0
+```
 
-- **Home:** larger Telugu wordmark, finished-entry count, centered, vertically stacked Insights
-  and Reminders shortcuts, and **+**. Home and Journal appear in the top navigation. The top-right calendar icon opens Calendar;
-  the palette icon beside it chooses an accent color, saved in `appearance.ini`
-  beside the database. Use the Journal tab to browse entries. Capture location and
-  descriptor are optional; select **Start writing** immediately to skip them.
-- **Editor:** a minimal notebook page with four editable lines in order: date,
-  descriptor, location, and time. The remaining page is a borderless plain-text
-  writing area; Finish entry and save status sit below the page. Drafts save locally after a 600 ms pause and before navigation
-  or closing. The status below the editor reports saving and errors. New blank
-  captures, including metadata-only captures, are not stored. A draft is
-  meaningful once it contains non-whitespace journal text.
-- **Finish entry:** saves and returns Home. Finished entries are read-only,
-  including their date, descriptor, location, and time. They can be opened for
-  reading or deleted with confirmation, but cannot be edited or reopened as
-  drafts. Drafts remain editable.
-- **Password protection:** off by default in the capture dialog. Enable the
-  iOS-style toggle and enter/confirm a password to protect that entry. Journal
-  text, descriptor, and location are encrypted from the first autosave using
-  AES-256-GCM with a fresh nonce for every save and a per-entry random salt for
-  scrypt key derivation. Opening a protected draft or finished entry prompts for
-  its password. Lists show a generic protected-entry label. The recorded date,
-  time, and finished state remain visible for Calendar and sorting. Passwords
-  and encryption keys are never written to disk. There is no password recovery;
-  losing the password means losing access to that entry. Deletion still uses the
-  normal confirmation. Protection applies per entry, not to Insights, Reminders,
-  or the whole app. Close or leave the editor to lock a protected entry again.
-- **Journal:** drafts and finished entries survive restart. Select an item and
-  use **Open / edit selected**, or double-click it. Home offers **Continue latest
-  draft**. Choose **Delete selected** for a confirmation before permanent deletion.
-- **Insights:** write your own observations, edit them, and check **Worked on**.
-  Uncheck it to reopen. Open items appear first. Deletion requires confirmation.
-- **Reminders:** square cards in a responsive grid, sorted by due date/time
-  descending, left to right and then top to bottom. Each card shows its title,
-  due date, optional AM/PM time, and Overdue/Today/Upcoming status. Check
-  **Complete** to save completion immediately, fade the card out, and animate
-  the remaining cards into the gap. **Show completed** displays completed cards;
-  uncheck one to reopen it. **Clear all completed** appears in this view and
-  permanently removes completed reminders after confirmation, keeping open ones. Each card has Edit and Delete actions; deletion
-  requires confirmation. Date-only reminders stay in Today all day and become
-  overdue the following day. Timed reminders become overdue after their due minute.
-- **Calendar:** choose a date in the month grid. A lavender circle marks finished
-  journal entries; a tan square marks reminders. Below the grid are that date's
-  finished entries and all reminders, including visibly completed reminders.
-  Click an item or press Enter to open it. The two creation buttons use the
-  selected date. New entries still default to the current local time.
-- Keyboard: Tab / Shift+Tab traverse controls, Enter / Space activate buttons,
-  Ctrl+N starts capture, and Ctrl+S saves the current entry. Calendar supports
-  Qt's normal arrow-key navigation.
+For other missing libraries, use the specific error message to find the matching
+package for your distribution. See [Qt for Python setup](https://doc.qt.io/qtforpython-6/gettingstarted.html).
 
-## Reminder behavior
+## Everyday use
 
-**Pratibha must be running to show alerts.** There is no background daemon,
-startup service, or operating-system scheduled alarm in v1. A timed reminder
-shows an in-app banner, plus a best-effort desktop notification if Qt detects
-system-tray notification support. Some desktops, including GNOME installations
-without a tray extension, may show only the in-app banner. Dismissing the banner
-does not complete the reminder; use its Completed checkbox.
+Press **+** on Home to capture an entry. Context and location are optional; start
+writing immediately if you prefer. The editor's first four lines contain date,
+context, location, and local time in AM/PM format. Adjust them to record an earlier
+moment. The rest of the page is yours.
+
+Drafts save after a short pause and before leaving or closing the editor. Blank
+new captures never appear in Journal. Use the **Journal** tab to return to drafts
+or read finished entries. **Finish entry is final:** the text and metadata become
+read-only, and the entry contributes to the Home count. Deleting an entry requires
+confirmation.
+
+Use **Insights** and **Reminders** from Home. Reminder cards are ordered by due
+date/time, latest first, from left to right and top to bottom. **Show completed**
+lets you reopen reminders; **Clear all completed** permanently deletes completed
+reminders after confirmation and keeps open ones.
+
+The top-right **calendar icon** opens Calendar; the **palette icon** changes the
+accent color. Calendar markers distinguish finished journal entries from reminders.
+Select a date to browse or create items for that day.
+
+Keyboard controls include Tab / Shift+Tab, Ctrl+N for a new entry, and Ctrl+S to
+save the current draft. Enter / Space activate buttons; Calendar supports arrow keys.
+
+## Reminders and alerts
+
+**Pratibha must be running to show alerts.** There is no background service or
+scheduled OS alarm. Timed reminders show an in-app banner and, where supported,
+a best-effort desktop notification. Desktop delivery and sound are not guaranteed.
 
 The app checks at launch, every 15 seconds, and when it becomes active. The next
-timer tick after sleep catches missed reminders. Missed timed reminders alert
-once on reopening; they also appear in Overdue if their due time has passed.
-Date-only reminders have no timed alert. No sound or notification delivery is
-guaranteed by the desktop.
+check after sleep catches missed reminders. Reminders that became due while the
+app was closed appear overdue on reopening and missed timed reminders alert once.
+Date-only reminders stay in Today throughout their due date, become overdue the
+next day, and do not send timed alerts.
 
-The alert flag is saved in SQLite when an alert is generated, so it does not
-repeat after restart. Editing the title or completion state preserves that flag;
-changing the due date or time resets it for the new schedule. Reopening a
-completed reminder that has never alerted makes it eligible to alert; reopening
-one that already alerted does not repeat it unless rescheduled. V1 uses the
-current local wall clock for timed alerts, including after a time-zone change;
-it is not a travel-aware or recurring alarm system.
+Alert state survives restart. Editing a title or completion state does not repeat
+an alert; changing the due date or time makes the reminder eligible at its new
+schedule. Reopening a completed reminder that never alerted makes it eligible;
+reopening one that already alerted does not repeat it without rescheduling.
+Timed alerts follow the current local wall clock, not a fixed worldwide instant.
 
-## Local storage and portability
+## Privacy, passwords, and backups
 
-The app creates `pratibha.sqlite3` beneath Qt's per-user `AppDataLocation` with
-organization and application name `Pratibha`. Click the small **Storage** button at the bottom center
-for the exact database path on your machine. On Linux this is normally beneath
-`~/.local/share/Pratibha/Pratibha/` (or `$XDG_DATA_HOME`). It is outside the source
-folder and survives upgrades or removal of the virtual environment.
+Everything is stored locally. Click **Storage** at the bottom center to see the
+exact SQLite database path. Qt chooses the per-user application data directory on
+each OS; the database is outside the project folder. Appearance preferences are
+stored in `appearance.ini` beside it.
 
-Journal recorded dates and reminder due dates are literal ISO calendar dates,
-with separate local `HH:mm` values internally (displayed as AM/PM in the UI). They are never converted from UTC, so
-calendar placement remains stable after restart or a system time-zone change.
-Database operations live in `pratibha/storage.py`; widgets live in
-`pratibha/app.py`. SQLite `PRAGMA user_version=2` adds optional per-entry protection, migrating
-existing entries without changing their contents.
-Newer unsupported schema versions are rejected rather than modified.
+Password protection is **per entry**, optional at creation, and off by default.
+Protected text, context, and location use AES-256-GCM encryption with a fresh nonce
+per save and a per-entry random salt for scrypt key derivation. Opening the entry
+requires its password; leaving the editor locks it again. Passwords and encryption
+keys are not saved to disk.
 
-Close the app before copying the database for a backup. Unprotected entries, Insights, Reminders,
-and calendar metadata use plaintext SQLite storage. Only entries created with
-password protection enabled have encrypted text and private metadata. Backups
-of older unprotected data remain unprotected. There are no automatic backups. Use one running instance per user database.
+**There is no password recovery.** Recorded dates, times, and finished state remain
+visible for Calendar and sorting. Unprotected entries, Insights, Reminders, and
+calendar metadata are plaintext. Protection does not lock the whole application
+or prevent confirmed deletion. Older backups of unprotected data remain unprotected.
 
-## Windows and macOS
+Close Pratibha before copying `pratibha.sqlite3` for a backup; copy `appearance.ini`
+as well if you want your color preference. There are no automatic backups or sync.
+Use one running app instance per database. Local calendar dates remain stable across
+restarts and system time-zone changes. Existing databases migrate automatically;
+newer unsupported schema versions are rejected rather than modified.
 
-Use Python 3.10 or later and a PySide6-supported OS/Python combination.
-From the project directory in Windows PowerShell:
+## Updates
 
-```powershell
-py -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m pratibha
-```
+Close the app before updating. With a Git checkout, run `git pull` from the project
+folder. With a ZIP download, extract the newer version into a folder and follow
+setup again. Then reinstall dependencies using that platform's command above.
+Your database remains in the per-user data directory. Back it up before updating.
 
-On macOS, from the project directory:
+## Checks and tested behavior
 
-```bash
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python -m pratibha
-```
-
-These platforms have launch guidance only; neither was tested. Code uses Qt's
-portable widgets, paths, timers, and notification API, and no Linux-only runtime
-commands.
-
-## Verification
-
-Database checks use the installed dependencies and temporary databases:
-
-```bash
-.venv/bin/python -m unittest discover -s tests -p test_storage.py -v
-```
-
-With dependencies installed, run the complete suite, including headless Qt GUI
-smoke checks:
+On Linux or macOS, from the project folder:
 
 ```bash
 QT_QPA_PLATFORM=offscreen .venv/bin/python -m unittest discover -s tests -v
 ```
 
-For a real desktop GUI run, omit `QT_QPA_PLATFORM=offscreen`. In PowerShell, set
-`$env:QT_QPA_PLATFORM = 'offscreen'` before the test command if needed.
+On Windows PowerShell:
 
-The tests cover draft recovery, blank captures, pending edits, finish/read-only/delete
-counts, calendar grouping including completed reminders, stable dates across
-TZ changes, insight lifecycle, date-only reminders, missed alerts, exact due
-minutes, restart suppression, and rescheduling. The GUI acceptance check captures
-and finishes text, creates a same-day reminder, checks Calendar markers/items,
-and reopens the database in a new window. All GUI tests use temporary data.
-
-**Actually verified in the build environment:** Fedora Linux 42, Python 3.13,
-PySide6 6.12.0. All 22 tests passed (13 database checks and 9 GUI checks), with
-networking disabled using a separate Linux network namespace. The nine GUI
-checks also passed on the native Wayland desktop backend with networking
-disabled. The capture → finish → same-day reminder → Calendar → reopen flow
-passed using temporary data. Home, editor, and Calendar screenshots were
-visually inspected at a 900 × 700 logical window size. Python compilation passed.
-
-Dependencies were successfully installed into `.venv` after network permissions
-were enabled. Desktop notification delivery and real suspend/resume remain
-unverified; catch-up logic was tested with simulated wall-clock times. Windows
-and macOS were not tested.
-
-To repeat the isolated offline suite on Linux (where unprivileged user/network
-namespaces are enabled):
-
-```bash
-unshare --user --map-root-user --net env QT_QPA_PLATFORM=offscreen .venv/bin/python -m unittest discover -s tests -v
+```powershell
+$env:QT_QPA_PLATFORM = 'offscreen'
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+Remove-Item Env:QT_QPA_PLATFORM
 ```
 
-Manual acceptance after installing dependencies:
+Tests use temporary databases. Omit the offscreen setting for native desktop GUI
+checks. A POSIX time-zone-specific test skips on Windows.
 
-1. Disconnect networking and launch the app.
-2. Press **+**, skip metadata, write a short entry, and **Finish entry**.
-3. Create a reminder for today; optionally give it a time one minute ahead.
-4. Open **Calendar**, select today, and confirm both the entry and reminder.
-5. Wait for the timed banner, then close and reopen the app. Verify both items
-   persist and that the reminder does not alert again unless rescheduled.
+**Verified on Fedora 42 with Python 3.13 and PySide6 6.12.0:** 22 tests passed,
+covering draft recovery, read-only finished entries, date rendering, encryption,
+schema migration, calendar grouping, reminder restart/rescheduling, card completion
+and reflow, and clearing completed cards. The acceptance flow—capture, finish,
+create a same-day reminder, see both in Calendar, and reopen—passed. Offline checks
+ran in an isolated Linux network namespace, and GUI checks also ran on Wayland.
+
+Windows, macOS, other Linux distributions, actual desktop notification delivery,
+and real suspend/resume have not been verified. Catch-up behavior was checked with
+simulated wall-clock times.
+
+Bundled Varela Round and Noto Sans Telugu fonts include their SIL Open Font
+Licenses under `pratibha/assets/fonts/`. All visual assets load locally.
